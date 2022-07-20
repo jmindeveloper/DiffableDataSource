@@ -8,11 +8,17 @@
 import UIKit
 
 struct Item: Hashable {
+    // id로 모든 Item 인스턴스가 같은 값을 가지지 못하도록 해줌
     let id = UUID().uuidString
     let content: String
     
     init(content: String) {
         self.content = content
+    }
+    
+    // 해쉬함수
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
     }
 }
 
@@ -20,15 +26,20 @@ class ViewController: UIViewController {
     
     enum TableViewSection: CaseIterable {
         case main
+        case second
     }
 
     // MARK: - Outlet
     @IBOutlet weak var tableView: UITableView!
     
     // MARK: - Properties
-    private var dataSource: UITableViewDiffableDataSource<TableViewSection, Item>!
-    private var tableViewItem = [Item]()
+    private var dataSource: UITableViewDiffableDataSource<TableViewSection, Item>?
     private let randomItemContent = ["김지민", "김은서", "김현식", "뽀로로"]
+    private var tableViewItem = [Item]() {
+        didSet {
+            applySnapshot()
+        }
+    }
     
     // MARK: - LifeCycle
     override func viewDidLoad() {
@@ -49,19 +60,23 @@ class ViewController: UIViewController {
         var snapshot = NSDiffableDataSourceSnapshot<TableViewSection, Item>()
         snapshot.appendSections([.main])
         snapshot.appendItems(tableViewItem)
-        self.dataSource.apply(snapshot, animatingDifferences: true)
+        self.dataSource?.apply(snapshot, animatingDifferences: true)
     }
     
     // MARK: - Action
     @IBAction func addTableViewItemButton(_ sender: Any) {
         let item = Item(content: randomItemContent.randomElement() ?? "김지민")
         tableViewItem.append(item)
-        applySnapshot()
     }
     
     @IBAction func deleteTableViewItemButton(_ sender: Any) {
-        tableViewItem.removeLast()
-        applySnapshot()
+        if !tableViewItem.isEmpty {
+            tableViewItem.removeLast()
+        }
+    }
+    
+    @IBAction func shuffleTableViewItemButton(_ sender: Any) {
+        tableViewItem.shuffle()
     }
 }
 

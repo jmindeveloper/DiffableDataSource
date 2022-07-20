@@ -69,6 +69,11 @@
                                     <action selector="addTableViewItemButton:" destination="BYZ-38-t0r" id="PHI-hQ-24f"/>
                                 </connections>
                             </barButtonItem>
+                            <barButtonItem title="셔플" id="12D-Wh-f4Z">
+                                <connections>
+                                    <action selector="shuffleTableViewItemButton:" destination="BYZ-38-t0r" id="MeI-QZ-6wN"/>
+                                </connections>
+                            </barButtonItem>
                         </rightBarButtonItems>
                     </navigationItem>
                     <connections>
